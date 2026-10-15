@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f6f0">
+  <meta name="description" content="SourceDesk — a considered workspace for questions, documents, and the evidence between them.">
+  <title>SourceDesk — Your research, grounded.</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23495539'/%3E%3Ctext x='7' y='24' font-family='Georgia' font-size='25' fill='%23f7f6f0'%3ES%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/assets/styles.css">
+  <script type="module" src="/assets/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <div id="provider-banner" class="provider-banner" role="status" hidden><strong>Test provider active</strong><span>Answers are deterministic test output, not real-model research results.</span></div>
+  <section id="auth-screen" class="auth-screen" aria-label="Welcome to SourceDesk">
+    <div class="auth-story">
+      <a class="brand" href="/" aria-label="SourceDesk home"><span class="brand-mark" aria-hidden="true">S<span>·</span></span>SourceDesk</a>
+      <div class="auth-editorial"><span class="eyebrow">A workspace for considered research</span><h1>Good questions.<br>Solid ground.</h1><p>Bring your documents together.<br>Ask what matters. Follow the evidence.</p><div class="editorial-rule"></div><p class="editorial-note">Your reading, with a little more perspective.</p></div>
+      <div class="auth-footnote"><span>DOCUMENTS → QUESTIONS → SOURCES</span><span>One connected workspace.</span></div>
+    </div>
+    <main class="auth-panel" id="main"><div class="auth-form-wrap">
+      <span class="eyebrow">Make room for your next question</span><h2 id="auth-title">Welcome back.</h2><p id="auth-description" class="muted">Sign in to pick up where you left off.</p>
+      <div class="auth-switch" aria-label="Account action"><button type="button" id="login-tab" class="active" aria-pressed="true">Sign in</button><button type="button" id="register-tab" aria-pressed="false">Create account</button></div>
+      <form id="auth-form">
+        <label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="username" maxlength="320" placeholder="you@example.com" required>
+        <div class="label-row"><label for="password">Password</label></div>
+        <input id="password" name="password" type="password" autocomplete="current-password" maxlength="128" required aria-describedby="password-help"><small id="password-help">Use your SourceDesk account password.</small>
+        <div id="auth-error" class="error-box" role="alert" hidden></div>
+        <button class="button primary auth-submit" id="auth-submit" type="submit">Sign in <span aria-hidden="true">↗</span></button>
+      </form>
+      <p class="auth-privacy">A private place for your documents. Your session stays in this browser tab; signing out removes it from this tab.</p>
+    </div><span class="auth-panel-footer">Read closely. Think clearly.</span></main>
+  </section>
+  <div id="workspace" class="workspace" hidden>
+    <header class="topbar"><div class="topbar-brand"><button id="menu-toggle" type="button" class="icon-button mobile-menu" aria-label="Open collections" aria-expanded="false" aria-controls="sidebar">☰</button><a class="brand" href="/"><span class="brand-mark" aria-hidden="true">S<span>·</span></span>SourceDesk</a><span class="brand-divider"></span><span class="workspace-label">Research workspace</span></div><div class="topbar-right"><span class="private-label"><span aria-hidden="true">◈</span> Your private workspace</span><button type="button" id="signout" class="button subtle">Sign out</button></div></header>
+    <div class="workspace-grid">
+      <aside id="sidebar" class="sidebar" aria-label="Collections"><div class="sidebar-heading"><span class="eyebrow">Your collections</span><button type="button" id="new-collection" class="icon-button" aria-label="Create collection">+</button></div><p class="sidebar-caption">A place for each line of inquiry.</p><nav id="collections" aria-label="Collection list"></nav><button id="reload-collections" type="button" class="text-button sidebar-refresh">Refresh collections</button><div class="sidebar-bottom"><div class="account-avatar" aria-hidden="true">R</div><div><span class="account-label">Your account</span><span id="account-email"></span></div></div></aside>
+      <main id="workbench" class="workbench" tabindex="-1">
+        <div class="collection-header"><div class="breadcrumb">WORKSPACE <span aria-hidden="true">/</span> <span id="breadcrumb-name">GETTING STARTED</span></div><div class="title-row"><div><h1 id="collection-title">Your next line of inquiry.</h1><p id="collection-description">Give your research a place to begin.</p></div><button type="button" id="delete-collection" class="icon-button danger" aria-label="Delete collection" hidden>⌫</button></div><div class="workbench-navigation"><div class="tabs" role="tablist" aria-label="Collection views"><button id="questions-tab" type="button" role="tab" aria-selected="true" aria-controls="questions-panel">Questions <span id="question-count" class="count">0</span></button><button id="library-tab" type="button" role="tab" aria-selected="false" aria-controls="library-panel" tabindex="-1">Documents <span id="document-count" class="count">0</span></button></div><button id="sources-toggle" type="button" class="text-button" aria-expanded="false" aria-controls="inspector">Source notebook ↗</button></div></div>
+        <div id="workspace-error" class="error-box workspace-error" role="alert" hidden></div>
+        <div id="workspace-status" class="sr-only" role="status" aria-live="polite"></div>
+        <section id="no-collection" class="empty-workspace"><div class="folio-symbol" aria-hidden="true">01<span>—</span></div><span class="eyebrow">Start with a collection</span><h2>Every good answer<br>starts somewhere.</h2><p>Organize a set of PDFs around a topic.<br>Your questions and their sources will live together here.</p><button id="first-collection" type="button" class="button primary">Create your first collection <span aria-hidden="true">+</span></button></section>
+        <section id="questions-panel" role="tabpanel" aria-labelledby="questions-tab" class="questions-panel" hidden><div id="question-history" class="question-history"></div><div id="question-pending" class="question-pending" role="status" hidden><span class="spinner" aria-hidden="true"></span><div><strong>Following the evidence…</strong><small>Retrieving passages and preparing an answer. This can take a moment.</small></div></div><div class="composer-wrap"><form id="question-form"><div class="composer-top"><label for="question-input">Ask your collection</label><button type="button" id="scope-button" class="scope-button" aria-expanded="false" aria-controls="scope-popover">All ready documents ▾</button></div><div id="scope-popover" class="scope-popover" hidden><div class="scope-heading"><strong>Focus your question</strong><button type="button" id="scope-all" class="text-button">Use all documents</button></div><p>Optional: narrow to ready documents. No selection searches all ready documents.</p><div id="scope-options"></div></div><textarea id="question-input" name="question" required maxlength="2000" rows="2" placeholder="What would you like to understand?"></textarea><div class="composer-bottom"><span id="composer-help">Answers are only as good as their evidence. Check the sources.</span><button id="ask-button" class="button primary" type="submit">Ask question <span aria-hidden="true">↑</span></button></div></form></div></section>
+        <section id="library-panel" class="library-panel" role="tabpanel" aria-labelledby="library-tab" hidden><div class="library-intro"><div><h2>The reading room.</h2><p class="muted">The documents behind your questions.</p></div><button type="button" id="refresh-documents" class="button subtle">Refresh</button></div><label class="dropzone" id="dropzone" for="pdf-input"><span class="upload-icon" aria-hidden="true">↑</span><strong>Add a little context.</strong><span>Drop PDFs here, or <span class="underlined">browse files</span></span><small>PDF only. Default server limits: 10 MB / 100 pages per file.<br>Actual limits are enforced by your server. Text-based PDFs work best.</small><input id="pdf-input" type="file" accept="application/pdf,.pdf" multiple></label><div id="upload-status" class="upload-status" role="status" hidden></div><div class="document-list-heading"><span class="eyebrow">Collection documents</span><span class="muted">Ready documents can be searched</span></div><div id="document-list"></div></section>
+        <footer class="workbench-footer"><span>Keep the question. Check the source.</span><span>SOURCEDESK</span></footer>
+      </main>
+      <aside id="inspector" class="inspector" aria-label="Source notebook"><div class="inspector-heading"><span class="eyebrow">Source notebook</span><button id="close-inspector" type="button" class="icon-button" aria-label="Close source notebook">×</button></div><div id="source-content" class="source-content"></div><div class="inspector-footer"><span aria-hidden="true">↖</span> Follow a citation to the original context.</div></aside>
+    </div>
+    <button id="pane-scrim" class="pane-scrim" type="button" aria-label="Close collections" hidden></button>
+  </div>
+  <dialog id="collection-dialog"><form id="collection-form"><div class="dialog-heading"><span class="eyebrow">A new line of inquiry</span><button id="close-collection-dialog" type="button" class="icon-button" aria-label="Close dialog">×</button></div><h2>Create a collection.</h2><p class="muted">Bring related documents and questions together.</p><label for="collection-name">Collection name</label><input id="collection-name" name="name" maxlength="200" required placeholder="e.g. Urban futures"><label for="collection-notes">Description <span class="muted">(optional)</span></label><textarea id="collection-notes" name="description" maxlength="2000" rows="3" placeholder="What are you looking into?"></textarea><div id="collection-error" class="error-box" role="alert" hidden></div><button id="create-collection-submit" type="submit" class="button primary">Create collection <span aria-hidden="true">+</span></button></form></dialog>
+  <dialog id="confirm-dialog"><form method="dialog"><span class="eyebrow">Before you continue</span><h2 id="confirm-title">Delete this item?</h2><p id="confirm-description"></p><div class="dialog-actions"><button class="button subtle" value="cancel">Keep it</button><button class="button destructive" value="confirm">Delete permanently</button></div></form></dialog>
+  <noscript><p class="error-box">SourceDesk needs JavaScript to sign in and work with your documents.</p></noscript>
+</body>
+</html>

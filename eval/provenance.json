@@ -1,0 +1,38 @@
+{
+  "dataset_id": "sourcedesk-self-authored-v1",
+  "license": "CC0-1.0",
+  "review_status": "draft_not_human_reviewed",
+  "source_sha256": "b64e28fb825a7b76dafb71795d643c359f3b0939e5ec251485493fd6b69eaf88",
+  "generator": "scripts/make_fixtures.py; reportlab Canvas invariant=1",
+  "documents": [
+    {
+      "filename": "harbor-handbook.pdf",
+      "pages": 3,
+      "sha256": "e295cecb51d36acbbce640ed0d657e97171b513f9ebdc9c0ac9b4e69a98ecdc4",
+      "source": "eval/source/corpus.json",
+      "license": "CC0-1.0",
+      "origin": "Self-authored fictional text; not copied from external works"
+    },
+    {
+      "filename": "harbor-notice.pdf",
+      "pages": 3,
+      "sha256": "1864046949bf813a450ea313fd4eb633d4cf3221fdb7f5066313094a7e7b0b15",
+      "source": "eval/source/corpus.json",
+      "license": "CC0-1.0",
+      "origin": "Self-authored fictional text; not copied from external works"
+    },
+    {
+      "filename": "cedar-field-guide.pdf",
+      "pages": 3,
+      "sha256": "c0f5a9c33564592bddc81e644ea74d8f0b639a3ae16eb92b41e026badd52b5b6",
+      "source": "eval/source/corpus.json",
+      "license": "CC0-1.0",
+      "origin": "Self-authored fictional text; not copied from external works"
+    }
+  ],
+  "questions": 12,
+  "splits": {
+    "dev": 8,
+    "heldout": 4
+  }
+}

@@ -1,0 +1,52 @@
+# Paid single-instance deployment. See docs/render.md before creating resources.
+services:
+  - type: web
+    name: sourcedesk
+    runtime: python
+    region: oregon
+    plan: 0.5c-512mb
+    numInstances: 1
+    autoDeployTrigger: "off"
+    buildCommand: bash scripts/render-build.sh
+    startCommand: uv run --locked --no-dev python scripts/render_start.py
+    healthCheckPath: /ready
+    maxShutdownDelaySeconds: 40
+    disk:
+      name: sourcedesk-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.13"
+      - key: UV_VERSION
+        value: "0.12.3"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: SOURCEDESK_DATABASE_URL
+        fromDatabase:
+          name: sourcedesk-db
+          property: connectionString
+      - key: SOURCEDESK_JWT_SECRET
+        generateValue: true
+      - key: SOURCEDESK_PROVIDER
+        value: fake
+      - key: SOURCEDESK_UPLOAD_DIR
+        value: /var/data/uploads
+      - key: TIKTOKEN_CACHE_DIR
+        value: /var/data/tiktoken
+      - key: SOURCEDESK_CORS_ORIGINS
+        value: "[]"
+      # Optional OpenAI key is deliberately absent: fake mode must not prompt
+      # for a required secret. Add it privately in Render only when opting in.
+
+databases:
+  - name: sourcedesk-db
+    region: oregon
+    plan: 0.1c-256mb
+    postgresMajorVersion: "18"
+    databaseName: sourcedesk
+    user: sourcedesk
+    diskSizeGB: 1
+    storageAutoscalingEnabled: false
+    connectionPool: none
+    ipAllowList: []

@@ -1,0 +1,14 @@
+CC0 1.0 Universal public-domain dedication
+
+To the extent possible under law, the authors of the original fictional text,
+draft questions, reference answers, rubric and generated fixture PDFs in this
+eval/ directory waive all copyright and related or neighboring rights to these
+materials worldwide under CC0 1.0. These materials may be copied, modified and
+redistributed for any purpose without permission. No warranty is provided.
+
+This dedication covers self-authored fixture content, not ReportLab, PDF reader
+libraries, or any other third-party software. The texts describe fictional
+organizations and must not be used as operational, safety or scientific advice.
+
+License identifier: CC0-1.0. Canonical legal text:
+https://creativecommons.org/publicdomain/zero/1.0/legalcode
