@@ -10,7 +10,6 @@ services:
     buildCommand: bash scripts/render-build.sh
     startCommand: uv run --locked --no-dev python scripts/render_start.py
     healthCheckPath: /ready
-    maxShutdownDelaySeconds: 40
     disk:
       name: sourcedesk-data
       mountPath: /var/data

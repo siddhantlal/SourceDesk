@@ -1,6 +1,7 @@
 """Deployment checks are isolated: no live database, fixtures, or parent servers."""
 import importlib.util
 import os
+import re
 import sys
 import threading
 import time
@@ -15,6 +16,13 @@ from pydantic import ValidationError
 
 def test_same_origin_deployment_configuration(tmp_path, monkeypatch):
     from sourcedesk.config import Settings, get_settings
+
+    blueprint = (Path(__file__).resolve().parents[1] / "render.yaml").read_text(encoding="utf-8")
+    assert re.search(r"(?m)^\s*disk:\s*$", blueprint), "Original PDFs need their persistent disk"
+    assert re.search(r"(?m)^\s*mountPath:\s*/var/data\s*$", blueprint)
+    assert not re.search(r"(?m)^\s*maxShutdownDelaySeconds\s*:", blueprint), (
+        "Render rejects maxShutdownDelaySeconds on services with a persistent disk"
+    )
 
     secret = "deployment-test-only-secret-at-least-32-characters"
     suffix = "user:p%40postgres%3A%2F%2F@db.example:5432/sourcedesk?application_name=postgres://"

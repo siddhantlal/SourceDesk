@@ -24,6 +24,10 @@ There is no ingestion thread/background task inside FastAPI. One instance shares
 5. The database connection string is injected with `fromDatabase`; the JWT secret is generated with `generateValue: true`. The database's empty IP allowlist disables public/external database connections while allowing private-network access. Keep the direct connection, not transaction-pooled PgBouncer, because provisioning holds a session advisory lock.[1]
 6. Wait for the web deploy's `/ready` check to pass, then perform the checks below. Existing successful local checks do not establish that Render provisioning succeeded.
 
+### Blueprint validation: disk and shutdown delay
+
+If Render reports `max shutdown delay is not supported for services with a disk`, remove `maxShutdownDelaySeconds` from the web service, **not** its `disk` block. The upload disk is required to preserve original PDFs. Do not replace the field with a different timeout: omit it entirely, push the corrected Blueprint to the linked branch, and retry Blueprint validation/sync. Local JSON Schema validation does not cover every server-side compatibility rule; the deployment configuration test guards this combination explicitly.
+
 ## Equivalent manual setup
 
 If not using a Blueprint, create **New > PostgreSQL** first, then **New > Web Service** from the same repository. The web service must bind `0.0.0.0` and use Render's `PORT`; Render terminates public HTTPS at its load balancer.[8]
@@ -40,7 +44,8 @@ Use these exact values from the checked-in Blueprint:
 | Web compute / instances | `0.5c-512mb` / 1; no autoscaling |
 | Build | `bash scripts/render-build.sh` |
 | Start | `uv run --locked --no-dev python scripts/render_start.py` |
-| Health check / shutdown delay | `/ready` / 40 seconds |
+| Health check | `/ready` |
+| Custom shutdown delay | Omitted: incompatible with the persistent disk |
 | Persistent disk | `sourcedesk-data`, mount `/var/data`, 1 GB |
 | Automatic deploys | Off |
 
@@ -68,7 +73,7 @@ After the disk is mounted, startup creates the upload/token-cache directories, r
 
 Only after provisioning succeeds are API and worker started. Alembic uses the existing migrations and dynamic readiness heads, not a hardcoded revision. All SourceDesk Render entrypoints use the same advisory lock; unrelated manual migration commands do not automatically participate. A failed migration leaves the service unavailable instead of serving against an incompatible schema. Startup errors and Alembic subprocess output are redacted to avoid DSN leakage; investigate with an authorized private database session rather than logging connection strings.
 
-SIGTERM/SIGINT asks both children to stop; on Linux the supervisor translates this to group SIGINT, which Uvicorn and the worker handle. After a shared 25-second grace period it kills remaining process groups and reaps them. The Blueprint gives Render a 40-second shutdown allowance; Render can force-kill a process that exceeds its configured allowance.[6] Windows uses process-group Ctrl-Break with a bounded `taskkill /T /F` fallback; Windows graceful behavior is best-effort for children without Ctrl-Break handlers. An unexpected child exit, even exit 0, tears down its peer and makes the supervisor exit nonzero. Startup migrations are also stopped on shutdown.
+SIGTERM/SIGINT asks both children to stop; on Linux the supervisor translates this to group SIGINT, which Uvicorn and the worker handle. After a shared 25-second grace period it kills remaining process groups and reaps them. This is an application-side best-effort deadline, not a guaranteed platform allowance. The disk-backed Blueprint deliberately omits `maxShutdownDelaySeconds`, which Render's validator rejects for services with a disk; the platform can terminate a process before application cleanup completes.[6] Windows uses process-group Ctrl-Break with a bounded `taskkill /T /F` fallback; Windows graceful behavior is best-effort for children without Ctrl-Break handlers. An unexpected child exit, even exit 0, tears down its peer and makes the supervisor exit nonzero. Startup migrations are also stopped on shutdown.
 
 A restart can interrupt a claimed job. Claims/leases remain in PostgreSQL, so the existing worker can recover expired work on later polls; committed publication and durable file-cleanup behavior are unchanged. This does not promise that in-flight requests finish, that retries are unlimited, or that a killed migration can be ignored. Disk-backed deploy downtime includes migration time; plan maintenance windows and backward-compatible schema changes.
 
